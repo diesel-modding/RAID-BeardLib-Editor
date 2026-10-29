@@ -22,7 +22,7 @@ end
 
 function EditorBlurZone:_build_panel()
 	self:_create_panel()
-	self:NumberCtrl("mode", {min = 0, max = 2}, {help = "Set the mode, 0 is disable, 2 is flash, 1 is normal"})
-	self:NumberCtrl("radius", {min = 1}, {help = "Set the radius"})
-	self:NumberCtrl("height", {min = 0}, {help = "Set the height"})
+	self:NumberCtrl("mode", {min = 0, max = 2, help = "Set the mode, 0 is disable, 2 is flash, 1 is normal"})
+	self:NumberCtrl("radius", {min = 1, help = "Set the radius"})
+	self:NumberCtrl("height", {min = 0, help = "Set the height"})
 end

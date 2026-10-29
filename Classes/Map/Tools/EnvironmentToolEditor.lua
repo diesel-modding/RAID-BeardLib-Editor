@@ -152,6 +152,8 @@ function EnvTool:build_menu()
     self:add_sky_param(textures:pathbox("global_texture", nil, "", "texture", {not_close = true, text = "Cubemap"}))
     self:add_sky_param(textures:pathbox("global_world_overlay_texture", nil, "", "texture", {not_close = true, text = "World Overlay Texture", control_slice = 0.55}))
     self:add_sky_param(textures:pathbox("global_world_overlay_mask_texture", nil, "", "texture", {not_close = true, text = "World Overlay Mask", control_slice = 0.55}))
+    self:add_sky_param(textures:pathbox("colorgrade", nil, "", "texture", {not_close = true, text = "Colorgrade LUT"}))
+    self:add_sky_param(textures:slider("sky_rotation", nil, 0, {text = "Sun rotation", min = 0, max = 359, floats = 0}))
 
     -- SHADOWS
     local shadows = self._holder:group("Shadows", {control_slice = 0.5})

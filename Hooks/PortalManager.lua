@@ -40,8 +40,8 @@ function PortalUnitGroup:draw(t, dt, mul, skip_shapes, skip_units)
 	local brush = Draw:brush()
 	brush:set_color(Color(0.25, r, g, b))
 	if not skip_units then
-		for _, unit in ipairs(managers.worlddefinition._all_units) do
-			if self._ids[unit:unit_data().unit_id] then
+		for _, unit in pairs(managers.worlddefinition._all_units) do
+			if alive(unit) and self._ids[unit:unit_data().unit_id] then
 				brush:unit(unit)
 				Application:draw(unit, r, g, b)
 			end

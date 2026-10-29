@@ -654,6 +654,7 @@ function MainLayerEditor:destroy()
     if self._continent_settings then
         self._continent_settings:Destroy()
         self._script_settings:Destroy()
+        self._bookmark_settings:Destroy()
         self._objectives_manager:Destroy()
     end
 end

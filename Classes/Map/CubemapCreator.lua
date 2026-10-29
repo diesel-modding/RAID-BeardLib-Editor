@@ -123,6 +123,8 @@ function CubemapCreator:create_projection_light(type)
 	end
 
 	if #lights == 0 then
+		managers.editor:enable_all_post_effects()
+		managers.editor:update_post_effects()
 		return
 	end
 
@@ -584,6 +586,14 @@ function CubemapCreator:dome_occlusion_done()
 		unit:set_visible(true)
 	end
 
+	for _, element_unit in pairs(self._saved_hidden_elements) do
+		element_unit:set_enabled(true)
+	end
+
+	if managers.viewport and managers.viewport._sun_flare_effect then
+		managers.viewport._sun_flare_effect._sf_panel:show()
+	end
+
 	if self._saved_camera then
         self._parent:set_camera(self._saved_camera.pos, self._saved_camera.rot)
 		self._parent:set_camera_fov(self._saved_camera.fov)
@@ -625,7 +635,6 @@ function CubemapCreator:_generate_cubemap(file)
 	-- TODO: allow using the old generation script because
 	-- the ovk one is slow as shit
 	local ovk = true --self._params.dome_occ ~= nil or self:value("OverkillCubemapTools")
-	log("Using overkill tools?", tostring(ovk))
 	local exe_path = ovk and (encase_quotemarks(
 		Path:Combine(Application:base_path(), BLE.ModPath, "Tools", "cubemap_"..file .. ".bat")
 	) .. " ") or string.format('%s %s -i ', self._gen_path, file)

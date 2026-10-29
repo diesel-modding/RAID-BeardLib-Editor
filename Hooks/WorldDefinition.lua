@@ -478,7 +478,7 @@ function WorldDef:init_done()
 	local i = 1 
 	for continent, data in pairs(self._continent_definitions) do
 		if self._continents[continent].base_id then
-			i = math.max(self._start_id / self._continents[continent].base_id)
+			i = math.max(i, math.floor(self._continents[continent].base_id / self._start_id) + 1)
 		end
 	end
 	for continent, data in pairs(self._continent_definitions) do

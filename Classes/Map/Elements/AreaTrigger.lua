@@ -82,7 +82,7 @@ function EditorAreaTrigger:update(t, dt)
         for _, id in ipairs(self._element.values.use_shape_element_ids) do
             if not self._scripts[id] then
                 local element = managers.mission:get_mission_element(id)
-                local clss = MissionEditor:get_editor_class(element.class)
+                local clss = element and MissionEditor:get_editor_class(element.class)
                 if clss then
                     self._scripts[id] = clss:new(element)
                 end
@@ -92,7 +92,9 @@ function EditorAreaTrigger:update(t, dt)
 				end
 
                 local shape = EditorAreaTrigger.get_shape(self._scripts[id])
-                shape:draw(t, dt, 0.85, 0.85, 0.85)
+                if shape then
+                    shape:draw(t, dt, 0.85, 0.85, 0.85)
+                end
             end
         end
     end
@@ -134,9 +136,9 @@ function EditorAreaTrigger:set_shape_type()
 	self._width:SetEnabled(is_box)
 	self._height:SetEnabled(is_box or is_cylinder)
 	self._radius:SetEnabled(is_cylinder or is_sphere)
-	if self._use_disabled then
+	if self._use_disabled_shapes then
 		self._shape_type:SetEnabled(not uses_external)
-		self._use_disabled:SetEnabled(uses_external)
+		self._use_disabled_shapes:SetEnabled(uses_external)
 	end
 end
 

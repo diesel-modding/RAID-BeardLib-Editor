@@ -184,7 +184,7 @@ function DebugTool:check_loops(item)
         for _, executed in ipairs(on_executed) do
             if executed.delay == 0 then
                 local element = managers.mission:get_mission_element(executed.id)
-                for _, link in pairs(element.values.on_executed) do
+                for _, link in pairs(element and element.values.on_executed or {}) do
                     if link.id == id and link.delay == 0 and not table.contains(elements, executed.id) then
                         table.insert(loops, {e1 = id, e2 = executed.id})
                         table.insert(elements, id)

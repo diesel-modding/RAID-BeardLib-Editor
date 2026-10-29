@@ -33,8 +33,8 @@ function EditorAIRemove:update_selected(t, dt)
     if self._element.values.elements then
         for _, id in ipairs(self._element.values.elements) do
             local unit = self:GetPart('mission'):get_element_unit(id)
-			local r, g, b = unit:mission_element():get_link_color()
             if unit then
+				local r, g, b = unit:mission_element():get_link_color()
                 self:draw_link(
                     {
                         g = g,

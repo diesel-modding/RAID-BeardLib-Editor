@@ -14,8 +14,8 @@ function EditorAccessCamera:_build_panel()
 		return unit:base() and unit:base().security_camera
 	end})
 	self:StringCtrl("text_id", {help = "Select a text id from the combobox"})
-	self:NumberCtrl("yaw_limit", {floats = 0, min = -1}, {help = "Specify a yaw limit."})
-	self:NumberCtrl("pitch_limit", {floats = 0, min = -1}, {help = "Specify a pitch limit."})
+	self:NumberCtrl("yaw_limit", {floats = 0, min = -1, help = "Specify a yaw limit."})
+	self:NumberCtrl("pitch_limit", {floats = 0, min = -1, help = "Specify a pitch limit."})
 end
 
 function EditorAccessCamera:get_unit()

@@ -68,5 +68,5 @@ function BLTNotificationsGui:mouse_pressed(o, button, x, y)
             return true
         end
     end
-    return mouse_press(self, button, x, y)
+    return mouse_press(self, o, button, x, y)
 end

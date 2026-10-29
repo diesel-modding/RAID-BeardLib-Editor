@@ -352,7 +352,7 @@ end
 function Static:unit_value(value_key, toggle)
     local selected_units = self._selected_units
     local selected_unit = selected_units[1]
-    local value = selected_unit:unit_data()[value_key]
+    local value = selected_unit and selected_unit:unit_data()[value_key]
     if selected_unit then
         if #selected_units > 1 then
             local values_differ
@@ -599,8 +599,8 @@ function Static:set_unit_data()
     else
         local i = 0
         for _, unit in pairs(self._selected_units) do
-			local ud = unit:unit_data()
-            if alive(unit) and ud.unit_id then
+			local ud = alive(unit) and unit:unit_data()
+            if ud and ud.unit_id then
                 i = i + 1
                 self:set_unit_simple_values(unit)
 
@@ -682,28 +682,36 @@ function Static:set_unit_continent(unit, old_continent, new_continent, set)
 end
 
 function Static:set_unit_group(old_id, new_id, old_continent, new_continent)
-	for _, continent in pairs(managers.worlddefinition._continent_definitions) do
+	local continents = managers.worlddefinition._continent_definitions
+	local moved_groups = {}
+	local changed = false
+	for _, continent in pairs(continents) do
 		continent.editor_groups = continent.editor_groups or {}
 		for _, group in pairs(continent.editor_groups) do
 			if type(group) == "table" and group.units then
 				if group.reference == old_id then
 					group.reference = new_id
-
-					local continents = managers.worlddefinition._continent_definitions
-					table.delete(continents[old_continent].editor_groups, group)
-					continents[new_continent].editor_groups = continents[new_continent].editor_groups or {}
-					table.insert(continents[new_continent].editor_groups, group)
+					table.insert(moved_groups, group)
 				end
 				for i, unit_id in pairs(group.units) do
 					if unit_id == old_id then
 						group.units[i] = new_id
-                        self:GetPart("select"):reload_menu("group")
-						return
+						changed = true
+						break
 					end
 				end
-				return
 			end
 		end
+	end
+	--Move groups after iterating, the tables can't be modified while being iterated.
+	for _, group in pairs(moved_groups) do
+		table.delete(continents[old_continent].editor_groups, group)
+		continents[new_continent].editor_groups = continents[new_continent].editor_groups or {}
+		table.insert(continents[new_continent].editor_groups, group)
+		group.continent = new_continent
+	end
+	if changed then
+		self:GetPart("select"):reload_menu("group")
 	end
 end
 
@@ -1339,7 +1347,7 @@ function Static:remove_unit_from_portal()
         if #self:selected_units() == 1 then
             self:build_links(self:selected_unit():unit_data().unit_id)
         end
-        Utils:Notify("Success", string.format("Removed %d units to selected portal", count))
+        Utils:Notify("Success", string.format("Removed %d units from selected portal", count))
     else
         Utils:Notify("Error", "No portal selected")
     end
@@ -1688,7 +1696,7 @@ function Static:SpawnCopyData(copy_data, prefab)
             local unit = v.unit_data.name
             if missing_units[unit] == nil then
                 local is_preview_not_loaded = (not assets and not PackageManager:has(unit_ids, unit:id()))
-                local not_loaded = not assets and assets:is_asset_loaded("unit", unit)
+                local not_loaded = assets and not assets:is_asset_loaded("unit", unit)
                 if is_preview_not_loaded or not_loaded then
                     missing_units[unit] = true
                     missing = true
@@ -1753,7 +1761,7 @@ function Static:SpawnCopyData(copy_data, prefab)
                     local function find_packages()
                         for unit, is_missing in pairs(missing_units) do
                             if is_missing then
-                                if (assets:is_asset_loaded(unit, "unit") or add and FileIO:Exists(Path:Combine(mod.ModPath, add.directory, unit..".unit"))) then
+                                if (assets:is_asset_loaded("unit", unit) or add and FileIO:Exists(Path:Combine(mod.ModPath, add.directory, unit..".unit"))) then
                                     missing_units[unit] = nil
                                 end
                             else

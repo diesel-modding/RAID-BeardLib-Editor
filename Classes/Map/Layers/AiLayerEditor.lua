@@ -92,8 +92,8 @@ function AiEditor:save()
 end
 
 function AiEditor:reset_selected_units()
-    for k, unit in ipairs(clone(self._units)) do
-        if not alive(unit) then
+    for k = #self._units, 1, -1 do
+        if not alive(self._units[k]) then
             table.remove(self._units, k)
         end
     end
@@ -436,6 +436,7 @@ function AiEditor:update_ai_data()
 end
 
 function AiEditor:update(t, dt)
+    self._selected_unit = self:selected_unit()
     if self:Val("DrawPatrolPaths") then
         self:_draw_patrol_paths(t, dt)
     end

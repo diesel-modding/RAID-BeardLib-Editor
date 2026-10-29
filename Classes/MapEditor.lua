@@ -929,21 +929,21 @@ function Editor:reload_units(unit_names, skip_replace_units)
 
         if sequence_path then
             local sequence_file = BeardLib.Managers.File:Get("sequence_manager", sequence_path)
-            table.insert(files, {path = sequence_path, file = sequence_file.file, type = Idstring("sequence_manager")})
+            table.insert(files, {path = sequence_path, file = sequence_file and sequence_file.file, type = Idstring("sequence_manager")})
         end
 
         if material_config_path then
             local material_config_file = BeardLib.Managers.File:Get("material_config", material_config_path)
-            table.insert(files, {path = material_config_path, file = material_config_file.file, type = Idstring("material_config")})
+            table.insert(files, {path = material_config_path, file = material_config_file and material_config_file.file, type = Idstring("material_config")})
         end
 
         local unit_file = BeardLib.Managers.File:Get("unit", unit_path)
         local model_file = BeardLib.Managers.File:Get("model", model_path)
         local object_file = BeardLib.Managers.File:Get("object", model_path)
         
-        table.insert(files, {path = unit_path, file = unit_file.file, type = Idstring("unit")})
-        table.insert(files, {path = model_path, file = object_file.file, type = Idstring("object")})
-        table.insert(files, {path = model_path, file = model_file.file, type = Idstring("model")})
+        table.insert(files, {path = unit_path, file = unit_file and unit_file.file, type = Idstring("unit")})
+        table.insert(files, {path = model_path, file = object_file and object_file.file, type = Idstring("object")})
+        table.insert(files, {path = model_path, file = model_file and model_file.file, type = Idstring("model")})
     end
 
     Utils:ReloadAssets(files, not skip_replace_units and ClassClbk(self.parts.static, "recreate_units", reload_data))

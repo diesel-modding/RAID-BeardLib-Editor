@@ -1,5 +1,5 @@
 EnvironmentLayerEditor = EnvironmentLayerEditor or class(LayerEditor)
-local sky_rot_key = Idstring("sky_orientation/rotation"):key()
+local sky_rot_key = Idstring("others/sky_rotation"):key()
 local DEFAULT_CUBEMAP_RESOLUTION = 512
 local EnvLayer = EnvironmentLayerEditor
 function EnvLayer:init(parent)
@@ -25,6 +25,7 @@ function EnvLayer:init(parent)
 	self._effect_unit = "core/units/effect/effect"
 	self._dome_occ_shape_unit = "core/units/dome_occ_shape/dome_occ_shape"
 	self._cubemap_unit = "core/units/cubemap_gizmo/cubemap_gizmo"
+	self._pen = Draw:pen("green")
 end
 
 function EnvLayer:set_visible(visible)
@@ -191,8 +192,8 @@ function EnvLayer:save()
 end
 
 function EnvLayer:reset_selected_units()
-	for k, unit in ipairs(clone(self._created_units)) do
-		if not alive(unit) then
+	for k = #self._created_units, 1, -1 do
+		if not alive(self._created_units[k]) then
 			table.remove(self._created_units, k)
 		end
 	end
@@ -273,7 +274,7 @@ function EnvLayer:build_menu()
     local environment_group = self._holder:group("Environment")
 	environment_group:pathbox("Environment", ClassClbk(self, "change_environment"), environment_values.environment, "environment", {not_close = true})
     local sky = self._holder:group("Sky")
-    sky:slider("SkyRotation", ClassClbk(self, "change_sky_rotation"), environment_values.sky_rot, {min = 0, max = 360})
+    sky:slider("SkyRotation", ClassClbk(self, "change_sky_rotation"), environment_values.sky_rot, {min = 0, max = 359})
     -- local colors = {
     --     "color_off",
     --     "color_payday",
@@ -625,7 +626,7 @@ end
 function EnvLayer:change_sky_rotation(item)
  	self:data().environment_values.sky_rot = item:Value()
 	self:save()
-	managers.viewport:first_active_viewport()._env_handler:editor_set_value(sky_rot_key, item:Value()) -- I guess this works
+	managers.viewport:first_active_viewport()._env_handler:editor_set_value(sky_rot_key, item:Value())
 end
 
 function EnvLayer:kill_effect(unit)

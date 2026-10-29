@@ -583,21 +583,22 @@ end
 
 function MScript:delete_element(element)
 	local id = element.id
+	local script_element = self._elements[id]
 	managers.mission:delete_element_id(self._continent, id)
-	if self._elements[id] then
-		self._elements[id]:set_enabled(false)
+	if script_element then
+		script_element:set_enabled(false)
 		self._elements[id] = nil
 	else
 		Utils:GetPart("console"):Error("Something went wrong when deleting the element %s", tostring(id))
 	end
-	if self._element_groups[element.class] then
-		table.delete(self._element_groups[element.class], element)
+	if script_element and self._element_groups[element.class] then
+		table.delete(self._element_groups[element.class], script_element)
 	end
 end
 
 function MScript:debug_output(debug, color)
 	if managers.editor and managers.mission:persistent_debug_enabled() then
-		Utils:GetPart("console"):LogMission(debug:gsub('%%', '%'))
+		Utils:GetPart("console"):LogMission((debug:gsub('%%', '%%%%')))
 		managers.mission:add_persistent_debug_output(Application:date("%X") .. ": " .. debug, color)
 	end
 end

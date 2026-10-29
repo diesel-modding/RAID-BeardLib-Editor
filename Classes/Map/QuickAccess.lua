@@ -6,7 +6,7 @@ function QuickAccess:init(parent, menu)
     local size = BLE.Options:GetValue("QuickAccessToolbarSize")
     local toolbar_position = BLE.Options:GetValue("ToolbarPosition")
     local reversed = BLE.Options:GetValue("GUIOnRight")
-   
+    local position
     if toolbar_position == 1 then
         position = reversed and "TopLeft" or "TopRight"
     elseif toolbar_position == 2 then

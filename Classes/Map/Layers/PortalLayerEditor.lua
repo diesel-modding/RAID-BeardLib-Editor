@@ -32,8 +32,8 @@ function PortalLayer:set_selected_unit()
         self._selected_shape = nil
         self:select_shape()
     end
-    for k, unit in ipairs(clone(self._created_units)) do
-        if not alive(unit) then
+    for k = #self._created_units, 1, -1 do
+        if not alive(self._created_units[k]) then
             table.remove(self._created_units, k)
         end
     end
@@ -62,6 +62,7 @@ function PortalLayer:do_spawn_unit(unit_path, ud)
             ud.shape = shape
         end
     end
+	return unit
 end
 
 function PortalLayer:is_my_unit(unit)
@@ -117,7 +118,7 @@ function PortalLayer:build_unit_menu()
 		if unit:name() == self._portal_shape_unit:id() then
             unit:unit_data().shape:create_panel(S, S:GetItem("Transform"))
 		end
-        for i, shape in pairs(self._selected_portal._shapes) do
+        for i, shape in pairs(self._selected_portal and self._selected_portal._shapes or {}) do
             if shape == unit:unit_data().shape then
                 self._holder:GetItem("shape_"..tostring(i)):RunCallback()
                 break
@@ -267,7 +268,7 @@ function PortalLayer:rename_portal(item)
             return
         elseif managers.portal:unit_groups()[name] then
             BLE.Dialog:Show({title = "ERROR!", message = "Portal with that name already exists!", callback = function()
-                self:add_portal(name)
+                self:rename_portal(item)
             end})
             return
         end

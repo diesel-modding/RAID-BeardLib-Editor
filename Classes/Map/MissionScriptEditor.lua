@@ -258,7 +258,7 @@ function MissionScriptEditor:draw_elements(elements, is_link)
 	for k, id in ipairs(elements) do
 		local unit = self:GetPart("mission"):get_element_unit(id)
 		if alive(unit) then
-			if self:_should_draw_link(selected_unit, unit) then
+			if self:_should_draw_link(unit) then
 				local r, g, b = unit:mission_element():get_link_color()
 				self:draw_link({
 					from_unit = is_link and self._unit or unit,

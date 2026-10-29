@@ -54,7 +54,7 @@ function EditorAIAttention:draw_links()
 			local unit = self:GetPart('mission'):get_element_unit(id)
 			local draw = not selected_unit or unit == selected_unit or self._unit == selected_unit
 
-			if draw then
+			if draw and alive(unit) then
 				self:draw_link({
 					g = 0,
 					b = 0.75,
@@ -66,7 +66,7 @@ function EditorAIAttention:draw_links()
 		end
 	end
 
-	if selected_unit and self._parent_unit ~= selected_unit and self._parent_unit ~= selected_unit and self._unit ~= selected_unit then
+	if selected_unit and self._parent_unit ~= selected_unit and self._att_obj_unit ~= selected_unit and self._unit ~= selected_unit then
 		return
 	end
 
@@ -123,13 +123,15 @@ function EditorAIAttention:update_selected(t, dt)
 		for _, id in ipairs(self._element.values.instigator_ids) do
 			local unit = self:GetPart('mission'):get_element_unit(id)
 
-			self:draw_link({
-				g = 0,
-				b = 0.75,
-				r = 0,
-				from_unit = unit,
-				to_unit = self._unit
-			})
+			if alive(unit) then
+				self:draw_link({
+					g = 0,
+					b = 0.75,
+					r = 0,
+					from_unit = unit,
+					to_unit = self._unit
+				})
+			end
 		end
 	end
 end

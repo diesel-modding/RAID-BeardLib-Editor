@@ -172,8 +172,10 @@ elseif F == "raidjobmanager" then
 		for _, record in pairs(groupai._criminals) do
 			record.status = nil
 		end
-		managers.enemy:remove_delayed_clbk("_gameover_clbk")
-		groupai._gameover_clbk = nil
+		if groupai._gameover_clbk then
+			managers.enemy:remove_delayed_clbk("_gameover_clbk")
+			groupai._gameover_clbk = nil
+		end
 
 		local editor = managers.editor
 		-- _enabled is false while play testing. In the editor itself there is nothing more to do,
