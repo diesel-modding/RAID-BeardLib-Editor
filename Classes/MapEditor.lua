@@ -583,6 +583,30 @@ function Editor:enable()
     self:set_enabled(true)
 end
 
+function Editor:set_hud_updates_paused(paused)
+    local hud = managers.hud
+    if paused then
+        if not self._paused_hud_updators and hud and hud._updators then
+            self._paused_hud_updators = hud._updators
+            hud._updators = {}
+        end
+        if managers.waypoints and rawget(managers.waypoints, "update") == nil then
+            managers.waypoints.update = function() end
+        end
+    else
+        if self._paused_hud_updators then
+            for id, cb in pairs(hud._updators) do
+                self._paused_hud_updators[id] = cb
+            end
+            hud._updators = self._paused_hud_updators
+            self._paused_hud_updators = nil
+        end
+        if managers.waypoints then
+            managers.waypoints.update = nil
+        end
+    end
+end
+
 function Editor:set_enabled(enabled)
     enabled = NotNil(enabled, self._enabled)
     if enabled then
@@ -593,12 +617,14 @@ function Editor:set_enabled(enabled)
     if enabled then
         self._menu:Enable()
         managers.hud:set_disabled()
+        self:set_hud_updates_paused(true)
         self:sound_check_object_active(true)
         self:set_listener_active(true)
         self:set_wanted_mute(true)
     else
         self._menu:Disable()
         managers.hud:set_enabled()
+        self:set_hud_updates_paused(false)
         self:sound_check_object_active(false)
         self:set_listener_active(false)
         self:set_wanted_mute(false)
@@ -1470,6 +1496,16 @@ end
 function Editor:toggle_playtesting()
     if BLE.Options:GetValue("Map/SaveBeforePlayTesting") and self._enabled and not self._running_simulation then
         self.parts.opt:save()
+    end
+
+    -- Leaving the playtest ends the session and loads the level into the editor again (like in PAYDAY 2),
+    -- otherwise the session (bots, enemies, mission scripts) just keeps running behind the editor.
+    if self._running_simulation then
+        local last = BLE.Options:GetValue("LastLoaded")
+        if last and last.name then
+            BLE.LoadLevel:load_level(last, true)
+            return
+        end
     end
 
     local state

@@ -124,6 +124,7 @@
         <hook source_file="lib/managers/mission/elementnavlink" file="Fixes.lua"/>
         <hook source_file="lib/managers/mission/elementspawnenemydummy" file="Fixes.lua"/>
     	<hook source_file="core/lib/managers/mission/coreelementarea" file="Fixes.lua"/>
+        <hook source_file="lib/managers/hud/hudloadingscreen" file="HUDLoadingScreen.lua"/>
         <hook source_file="lib/setups/setup" file="Setup.lua"/>
         <hook source_file="lib/setups/gamesetup" file="GameSetup.lua"/>
         <hook source_file="lib/states/editorstate" file="EditorState.lua"/>
