@@ -268,7 +268,7 @@ function LoadLevelMenu:do_load_jobs()
 	self:search_levels()
 end
 
-function LoadLevelMenu:load_level(item)
+function LoadLevelMenu:load_level(item, skip_dialog)
 	local level_id = item.name
 	local job_id = item.job_id
     local safe_mode = self:GetItem("Safemode"):Value()
@@ -293,11 +293,25 @@ function LoadLevelMenu:load_level(item)
         Global.game_settings.mission = "none"
 		Global.game_settings.difficulty = difficulty_ids[difficulty] or "difficulty_2"
         Global.game_settings.world_setting = nil
-        self:start_the_game()
         BLE.Menu:set_enabled(false)
+        -- plain editor loading screen (see Hooks/HUDLoadingScreen.lua)
+        local camp = tweak_data.operations:mission_data(RaidJobManager.CAMP_ID)
+        if managers.menu and managers.menu.show_loading_screen and camp and camp.loading then
+            local data = {background = camp.loading.image, instant = true}
+            managers.menu:show_loading_screen(data)
+            -- the level load starts a new Lua state, this shows the screen again in there so the loading steps can be displayed
+            Global.dropin_loading_screen = data
+        end
+        self:start_the_game()
 
 		--Saving the last loaded job to file for the restart button
 		BLE.Options:SetValue("LastLoaded", {name = item.name, job_id = item.job_id, instance = item.instance and true or nil, real_id = item.real_id or nil, vanilla = item.vanilla})
+    end
+
+    if skip_dialog then
+        MenuCallbackHandler._game_started = nil
+        load()
+        return
     end
 
     local load_tbl = {{"Yes", load}}

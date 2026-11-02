@@ -583,6 +583,7 @@ function BLE:SetLoadingText(text)
         end
         s = s .. "\n" .. tostring(text)
         Global.LoadingText:set_name(s)
+        Global.LoadingText:set_text(s)
         return s
     end
 end
